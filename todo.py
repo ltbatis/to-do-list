@@ -6,6 +6,9 @@ class Projeto:
     def __init__(self, nome):
         self.nome = nome
         self.tarefas = []
+    
+    def __iter__(self):
+        return self.tarefas.__iter__()
 
     def add(self, descricao):
         self.tarefas.append(Tarefa(descricao))
@@ -40,11 +43,11 @@ def main():
     casa.add('Lavar roupa')
     casa.add('Dar banho no cachorro')
     print(casa)
-    for tarefa in casa.tarefas:
+    for tarefa in casa:
         print(f'- {tarefa}')
 
     casa.procurar('Lavar roupa').concluir()
-    for tarefa in casa.tarefas:
+    for tarefa in casa:
         print(f'- {tarefa}')
 
     mercado = Projeto('Compras de Mercado')
@@ -52,7 +55,7 @@ def main():
     mercado.add('Carne')
     mercado.add('Tomate')
     print(mercado)
-    for tarefa in mercado.tarefas:
+    for tarefa in mercado:
         print(f'- {tarefa}')
 
 
