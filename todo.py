@@ -1,5 +1,5 @@
 #!python3
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class Projeto:
@@ -10,8 +10,8 @@ class Projeto:
     def __iter__(self):
         return self.tarefas.__iter__()
 
-    def add(self, descricao):
-        self.tarefas.append(Tarefa(descricao))
+    def add(self, descricao, vencimento=None):
+        self.tarefas.append(Tarefa(descricao, vencimento))
 
     def pendentes(self):
         return [tarefa for tarefa in self.tarefas if not tarefa.feito]
@@ -26,22 +26,33 @@ class Projeto:
 
 
 class Tarefa:
-    def __init__(self, descricao):
+    def __init__(self, descricao, vencimento=None):
         self.descricao = descricao
         self.feito = False
         self.criacao = datetime.now()
+        self.vencimento = vencimento
 
     def concluir(self):
         self.feito = True
 
     def __str__(self):
-        return self.descricao + (' (Concluída)' if self.feito else '')
+        status = []
+        if self.feito:
+            status.append('(Concluído)')
+        elif self.vencimento:
+            if datetime.now() > self.vencimento:
+                status.append('(Vencida)')
+            else:
+                dias = (self.vencimento - datetime.now())
+                status.append(f'(Vence em {dias} dias)')
+        
+        return f'{self.descricao}'+' '.join(status) 
 
 
 def main():
     casa = Projeto('Tarefas de Casa')
-    casa.add('Lavar roupa')
-    casa.add('Dar banho no cachorro')
+    casa.add('Lavar roupa', datetime.now())
+    casa.add('Dar banho no cachorro', datetime.now() + timedelta(days=5))
     print(casa)
     for tarefa in casa:
         print(f'- {tarefa}')
